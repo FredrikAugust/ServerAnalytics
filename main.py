@@ -21,7 +21,7 @@ def get_means(time_type, n):
     '''This function gets the `n` last `time_type` and calculates
     the mean value of said selection.
     '''
-    last_times = [[y.index[-1] - Minute(x) for x in range(n)] for y in [loads, temps]]
+    last_times = [[y.index[-1] - time_type(x) for x in range(n)] for y in [loads, temps]]
 
     load_timed = [loads.ix[x:x+time_type(1)] for x in last_times[0]]
     temp_timed = [temps.ix[x:x+time_type(1)] for x in last_times[1]]
