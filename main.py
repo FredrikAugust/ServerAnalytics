@@ -22,9 +22,12 @@ loads, temps = [pd.read_csv(
 # We need to get the last 20 minutes to be able
 # to calculate the 20 last averages/minute
 
-def get_last_time(items, time_type, n):
+def get_last_time(time_type, n):
     '''Returns the `n` last `time_type` as a list before
     the last entry of `item`.
     '''
 
-    return [[y.index[-1] - Minute(x) for x in range(20)] for y in items]
+    return [[y.index[-1] - Minute(x) for x in range(n)] for y in [loads, temps]]
+
+# Get the last times from each of the different "time-types"
+last_times = [get_last_time(time_type, n) for time_type, n in [[Minute, 20], [Hour, 10], [Week, 5], [MonthBegin, 4]]]
