@@ -23,10 +23,12 @@ def get_means(time_type, n):
     '''
     last_times = [[y.index[-1] - time_type(x) for x in range(n)] for y in [loads, temps]]
 
-    load_timed = [loads.ix[x:x+time_type(1)] for x in last_times[0]]
-    temp_timed = [temps.ix[x:x+time_type(1)] for x in last_times[1]]
+    load_timed = [loads.ix[x : x + time_type(1)] for x in last_times[0]]
+    temp_timed = [temps.ix[x : x + time_type(1)] for x in last_times[1]]
 
-    return [[[x.index[0], x.mean()] for x in load_timed], [[x.index[0], x.mean()] for x in temp_timed]]
+    return [[[x.index[0] for x in load_timed], [x.mean() for x in load_timed]],
+            [[x.index[0] for x in temp_timed], [x.mean() for x in temp_timed]]
 
 # Get the last times from each of the different "time-types"
-means = [get_means(time_type, n) for time_type, n in [[Minute, 20], [Hour, 10], [Week, 5], [MonthBegin, 4]]]
+means = [get_means(time_type, n) for time_type, n in [[Minute, 20], [Hour, 10]]], [Week, 5], [MonthBegin, 4]]]
+
