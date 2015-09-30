@@ -16,3 +16,10 @@ __author__ = 'Fredrik A. Madsen-Malmo'
 loads, temps = [pd.read_csv(
                     '%s.csv' % x, header=None, index_col=0, parse_dates=True
                 ) for x in ['loads', 'temps']]
+
+def get_last_time(item, time_type, n=20):
+    '''Returns the `n` last `time_type` as a list before
+    the last entry of `item`.
+    '''
+
+    return [[item.index[-1] - time_type(x) for x in range(n)]]
