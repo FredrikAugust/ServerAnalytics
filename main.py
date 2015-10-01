@@ -27,14 +27,14 @@ loads, temps = [pd.read_csv(
 # I select from this object using the key and use the value as part of the name
 # If you look further down you'll see why the strange key-names
 times = {
-    'T': 'Minute',
+    '5S': 'Realtime',
     'H': 'Hour',
-    'W-mon': 'Week',
-    'MS': 'Month'
+    'D': 'Day',
+    'W-mon': 'Week'
 }
 
 def get_mean(item, time_type, n):
-    '''This function gets the `n` last `time_type` and calculates
+    '''This function gDets the `n` last `time_type` and calculates
     the mean value of said selection.
     '''
 
@@ -67,25 +67,23 @@ def get_mean(item, time_type, n):
 
 # All the types of 'things' that should get plotted
 items = [
-    # Minutes
-    # T is for some reason the way to express "minutes"
-    [loads, 'T', 20],
-    [temps, 'T', 20],
+    # 5 Seconds
+    # 5 Second intervals
+    [loads, '5S', 30],
+    [temps, '5S', 30],
 
     # Hour
-    [loads, 'H', 10],
-    [temps, 'H', 10],
+    [loads, 'H', 24],
+    [temps, 'H', 24],
+
+    # Day
+    [loads, 'D', 14],
+    [temps, 'D', 14],
 
     # Week
-    # Do monday-sunday intervals
-    [loads, 'W-mon', 5],
-    [temps, 'W-mon', 5],
-
-    # Month
-    # Do 1st-31st
-    # MS stands for MonthBegin
-    [loads, 'MS', 3],
-    [temps, 'MS', 3],
+    # Week mon-sun
+    [loads, 'W-mon', 16],
+    [temps, 'W-mon', 16],
 ]
 
 # Get the last times from each of the different "time-types"
