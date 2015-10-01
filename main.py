@@ -115,7 +115,7 @@ for mean in means:
     # ax.invert_xaxis()
 
     # Save the figure, implement naming system
-    plt.savefig('%s.png' % mean['name'].replace(' ', ''), dpi=200, bbox_inches='tight')
+    plt.savefig('public/%s.png' % mean['name'].replace(' ', ''), dpi=200, bbox_inches='tight')
 
     # Cleanup
     del fig
