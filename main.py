@@ -106,7 +106,7 @@ for mean in means:
     ax.plot(mean['items'][0], mean['items'][1])
 
     # Save the figure, implement naming system
-    plt.savefig('name.png', dpi=400, bbox_inches='tight')
+    plt.savefig('%s.png' % mean['name'].replace(' - ', ''), dpi=400, bbox_inches='tight')
 
     # Cleanup
     del fig
