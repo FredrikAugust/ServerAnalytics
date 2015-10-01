@@ -7,8 +7,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pandas.tseries.offsets import Hour, Minute, Week, MonthBegin
-
 __author__ = 'Fredrik A. Madsen-Malmo'
 
 # Configure matplotlib
@@ -21,16 +19,18 @@ font = {
 plt.rc('font', **font)
 
 # Start importing files
-
 loads, temps = [pd.read_csv(
                     '%s.csv' % x, header=None, index_col=0, parse_dates=True
                 ) for x in ['loads', 'temps']]
 
+# This is used to determine the names of the graphs
+# I select from this object using the key and use the value as part of the name
+# If you look further down you'll see why the strange key-names
 times = {
-    'M': 'Minute',
+    'T': 'Minute',
     'H': 'Hour',
-    'W': 'Week',
-    'M': 'Month'
+    'W-mon': 'Week',
+    'MS': 'Month'
 }
 
 def get_mean(item, time_type, n):
@@ -86,7 +86,6 @@ items = [
     # MS stands for MonthBegin
     [loads, 'MS', 3],
     [temps, 'MS', 3],
-
 ]
 
 # Get the last times from each of the different "time-types"
