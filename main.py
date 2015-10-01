@@ -96,6 +96,14 @@ for mean in means:
     # Create figure and axis objects
     fig = plt.figure(); ax = fig.add_subplot(1,1,1)
 
+    # Set height and width
+    fig.set_figheight(7)
+    fig.set_figwidth(12)
+
+    # Set axis labels
+    ax.set_xlabel(mean['name'].split(' - ')[1])
+    ax.set_ylabel(mean['name'].split(' - ')[0])
+
     # Add grid for more pleasurable viewing experience
     ax.grid()
 
@@ -103,10 +111,13 @@ for mean in means:
     ax.set_title(mean['name'])
 
     # Plot with dates on x axis
-    ax.plot(mean['items'][0], mean['items'][1])
+    ax.plot(mean['items'][0], mean['items'][1], 'o-')
+
+    # Invert x-axis so that newest is to the left
+    # ax.invert_xaxis()
 
     # Save the figure, implement naming system
-    plt.savefig('%s.png' % mean['name'].replace(' - ', ''), dpi=400, bbox_inches='tight')
+    plt.savefig('%s.png' % mean['name'].replace(' ', ''), dpi=200, bbox_inches='tight')
 
     # Cleanup
     del fig
