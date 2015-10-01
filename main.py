@@ -26,20 +26,51 @@ loads, temps = [pd.read_csv(
                     '%s.csv' % x, header=None, index_col=0, parse_dates=True
                 ) for x in ['loads', 'temps']]
 
-def get_means(time_type, n):
+times = {
+    'M': 'Minute',
+    'H': 'Hour',
+    'W': 'Week',
+    'M': 'Month'
+}
+
+def get_mean(item, time_type, n):
     '''This function gets the `n` last `time_type` and calculates
     the mean value of said selection.
     '''
-    last_times = [[y.index[-1] - time_type(x) for x in range(n)] for y in [loads, temps]]
 
-    load_timed = [loads.ix[x : x + time_type(1)] for x in last_times[0]]
-    temp_timed = [temps.ix[x : x + time_type(1)] for x in last_times[1]]
+    # Downsample by n, e.g. Hour
+    downsampled = item.resample(time_type)[:n]
 
-    return [[[x.index[0] for x in load_timed], [x.mean() for x in load_timed]],
-            [[x.index[0] for x in temp_timed], [x.mean() for x in temp_timed]]]
+    # Array for the name parameter
+    name = []
+
+    # Just to see what the first part of the title should be
+    if item.equals(loads):
+        name.append('CPU Load')
+    else:
+        name.append('Temperature')
+
+    # The second part should be e.g. Hour, Minute or Day
+    name.append(times[time_type])
+
+    # Create a title e.g. Temperature - Month
+    name = ' - '.join(name)
+
+    return {
+        'name': name,
+        'items': [
+            downsampled.index,
+            downsampled.values
+        ]
+    }
 
 # Get the last times from each of the different "time-types"
-means = [get_means(time_type, n) for time_type, n in [[Minute, 20], [Hour, 10], [Week, 5], [MonthBegin, 4]]]
+means = [get_mean(item, time_type, n) for item, time_type, n in [[Minute, 20], [Hour, 10], [Week, 5], [MonthBegin, 4]]]
+
+###
+# TODO:
+# Implement naming
+###
 
 # For each time
 for mean in means:
