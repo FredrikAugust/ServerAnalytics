@@ -1,6 +1,6 @@
 '''All the code in this file is written by me (Fredrik A. Madsen-Malmo).
 Feel free to use it however you'd like.
-The code is written for the ServerStatus project (v3).
+The code is written for the ServerStatus project (v2.1).
 '''
 
 import pandas as pd
@@ -39,7 +39,7 @@ def get_mean(item, time_type, n):
     '''
 
     # Downsample by n, e.g. Hour
-    downsampled = item.resample(time_type)[:n]
+    downsampled = item.resample(time_type)[-n:]
 
     # Array for the name parameter
     name = []
@@ -56,6 +56,7 @@ def get_mean(item, time_type, n):
     # Create a title e.g. Temperature - Month
     name = ' - '.join(name)
 
+    # Object with name and array with index and values
     return {
         'name': name,
         'items': [
@@ -64,33 +65,50 @@ def get_mean(item, time_type, n):
         ]
     }
 
+# All the types of 'things' that should get plotted
+items = [
+    # Minutes
+    # T is for some reason the way to express "minutes"
+    [loads, 'T', 20],
+    [temps, 'T', 20],
+
+    # Hour
+    [loads, 'H', 10],
+    [temps, 'H', 10],
+
+    # Week
+    # Do monday-sunday intervals
+    [loads, 'W-mon', 5],
+    [temps, 'W-mon', 5],
+
+    # Month
+    # Do 1st-31st
+    # MS stands for MonthBegin
+    [loads, 'MS', 3],
+    [temps, 'MS', 3],
+
+]
+
 # Get the last times from each of the different "time-types"
-means = [get_mean(item, time_type, n) for item, time_type, n in [[Minute, 20], [Hour, 10], [Week, 5], [MonthBegin, 4]]]
+means = [get_mean(item, time_type, n) for item, time_type, n in items]
 
-###
-# TODO:
-# Implement naming
-###
-
-# For each time
+# For each "mean-set"
 for mean in means:
-    # For load/temp inside of this
-    for type in mean:
-        # Create figure and axis-es
-        fig = plt.figure(); ax = fig.add_subplot(1,1,1)
+    # Create figure and axis objects
+    fig = plt.figure(); ax = fig.add_subplot(1,1,1)
 
-        # Add grid for easier viewing
-        ax.grid()
+    # Add grid for more pleasurable viewing experience
+    ax.grid()
 
-        # Set a title
-        ax.set_title('name')
+    # Set a title
+    ax.set_title(mean['name'])
 
-        # Plot with dates on x axis
-        ax.plot(type[0], type[1], 'k-')
+    # Plot with dates on x axis
+    ax.plot(mean['items'][0], mean['items'][1])
 
-        # Save the figure, implement naming system
-        plt.savefig('name.png', dpi=400, bbox_inches='tight')
+    # Save the figure, implement naming system
+    plt.savefig('name.png', dpi=400, bbox_inches='tight')
 
-        # Cleanup
-        del fig
-        del ax
+    # Cleanup
+    del fig
+    del ax
