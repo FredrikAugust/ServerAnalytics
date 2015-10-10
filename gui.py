@@ -13,7 +13,10 @@ import gui_classes
 __author__ = 'FredrikAugust@GitHub'
 
 # Create wx application
-app = wx.App()
+app = gui_classes.App(False)
 
-# Create main frame, this is like Window in tkinter
-frame = wx.Frame(None, -1, 'Configuration')
+# Start app thread
+mainLoop_t = threading.Thread(target=app.MainLoop)
+
+# Start the thread
+mainLoop_t.run()
