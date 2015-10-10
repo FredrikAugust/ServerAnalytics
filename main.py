@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-__author__ = 'Fredrik A. Madsen-Malmo'
+__author__ = 'FredrikAugust@GitHub'
 
 # Configure matplotlib
 font = {
@@ -32,6 +32,7 @@ times = {
     'D': 'Day',
     'W-mon': 'Week'
 }
+
 
 def get_mean(item, time_type, n):
     '''This function gDets the `n` last `time_type` and calculates
@@ -92,7 +93,8 @@ means = [get_mean(item, time_type, n) for item, time_type, n in items]
 # For each "mean-set"
 for mean in means:
     # Create figure and axis objects
-    fig = plt.figure(); ax = fig.add_subplot(1,1,1)
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
 
     # Set height and width
     fig.set_figheight(7)
@@ -115,7 +117,8 @@ for mean in means:
     # ax.invert_xaxis()
 
     # Save the figure, implement naming system
-    plt.savefig('public/%s.png' % mean['name'].replace(' ', ''), dpi=200, bbox_inches='tight')
+    plt.savefig('public/%s.png' % mean['name'].replace(' ', ''),
+                dpi=200, bbox_inches='tight')
 
     # Cleanup
     del fig
