@@ -144,7 +144,10 @@ the graphs.')
 plots rendered by main.py')
 
     def OnGeneral(self, event):
-        pass
+        frame = gui_buttons.General(None, 'General')
+        frame.Show()
+
+        return True
 
     def OnFont(self, event):
         pass

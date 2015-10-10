@@ -45,9 +45,20 @@ class BaseSettings(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_CLOSE_FRAME)
 
+        # Set a panel for everything else
+        self.mainPanel = wx.Panel(self)
+
     def OnQuit(self, event):
         self.Close()
 
     def OnAbout(self, event):
         wx.MessageBox('This is a menu for configuring the \
 plots rendered by main.py')
+
+
+class General(BaseSettings):
+    def __init__(self, *args, **kwargs):
+        # Run the init from BaseSettings
+        super(General, self).__init__(*args, **kwargs)
+
+        # Use self.mainPanel for assigning things
