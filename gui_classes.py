@@ -74,9 +74,9 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_CLOSE_FRAME)
 
-        #
+        # ------------
         # ELEMENTS
-        #
+        # ------------
 
         # Create the panel to hold the rest of the elements
         panel = wx.Panel(self)
@@ -96,22 +96,33 @@ class MainFrame(wx.Frame):
         style = wx.Button(panel, label='Style')
         intervals = wx.Button(panel, label='Intervals')
 
+        # Set tooltips for buttons
+        general.SetToolTip('General settings regarding \
+creation of graphs.')
+        font.SetToolTip('Settings regarding the appearance of the font')
+        style.SetToolTip('Settings regarding the visual properties of a \
+graph.')
+        intervals.SetToolTip('Settings regarding the interval-settings of \
+the graphs.')
+
         button_flags = wx.EXPAND | wx.BOTTOM | wx.RIGHT
 
         # Append everything to the grid layout
         sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
-                  border=10)
+                  border=10)  # Settings text
 
         sizer.Add(sep, pos=(1, 0), span=(1, 1),
-                  flag=wx.EXPAND | wx.BOTTOM, border=10)
+                  flag=wx.EXPAND | wx.BOTTOM, border=10)  # Separator line
 
-        sizer.Add(general, pos=(2, 0), flag=button_flags, border=5)
+        sizer.Add(general, pos=(2, 0), flag=button_flags, border=5)  # Buttons
         sizer.Add(font, pos=(3, 0), flag=button_flags, border=5)
         sizer.Add(style, pos=(4, 0), flag=button_flags, border=5)
-        sizer.Add(intervals, pos=(5, 0), flag=button_flags, border=5)
+        sizer.Add(intervals, pos=(5, 0), flag=button_flags, border=5)  # End
 
+        # Make the first column able to expand since it has the wx.EXPAND flag
         sizer.AddGrowableCol(0)
 
+        # Make sizer in control of assigning the size of elements in panel
         panel.SetSizer(sizer)
 
     def OnQuit(self, event):
