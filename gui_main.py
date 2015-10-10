@@ -37,7 +37,7 @@ class MainFrame(wx.Frame):
         # close button, clip children (whatever that is)
         wx.Frame.__init__(self, parent, -1, title,
                           style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
-                          wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+                          wx.CLOSE_BOX, size=wx.Size(200, 300))
 
         # Create a menu object, this is the drop-down
         menuFile = wx.Menu()
@@ -83,14 +83,18 @@ class MainFrame(wx.Frame):
         # Create the panel to hold the rest of the elements
         panel = wx.Panel(self)
 
-        # This is like a .row in bootstrap iirc
-        sizer = wx.GridBagSizer(1, 6)
+        # This is like a .table in bootstrap iirc
+        sizer = wx.GridBagSizer(1, 8)
 
         # Main heading
         settings = wx.StaticText(panel, label='Settings')
 
-        # Sep.
+        # Quit button
+        quit = wx.Button(panel, label='Quit')
+
+        # Sep. x2
         sep = wx.StaticLine(panel)
+        quit_sep = wx.StaticLine(panel)
 
         # Setting-buttons
         general = wx.Button(panel, label='General')
@@ -106,8 +110,9 @@ creation of graphs.')
 graph.')
         intervals.SetToolTip('Settings regarding the interval-settings of \
 the graphs.')
+        quit.SetToolTip('Quit the application.')
 
-        button_flags = wx.EXPAND | wx.BOTTOM | wx.RIGHT
+        button_flags = wx.EXPAND | wx.BOTTOM
 
         # Append everything to the grid layout
         sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
@@ -120,6 +125,9 @@ the graphs.')
         sizer.Add(font, pos=(3, 0), flag=button_flags, border=5)
         sizer.Add(style, pos=(4, 0), flag=button_flags, border=5)
         sizer.Add(intervals, pos=(5, 0), flag=button_flags, border=5)  # End
+
+        sizer.Add(quit_sep, pos=(6, 0), flag=wx.EXPAND | wx.BOTTOM, border=10)
+        sizer.Add(quit, pos=(7, 0), flag=button_flags, border=5)
 
         # Make the first column able to expand since it has the wx.EXPAND flag
         sizer.AddGrowableCol(0)
@@ -135,6 +143,8 @@ the graphs.')
         font.Bind(wx.EVT_BUTTON, self.OnFont)
         style.Bind(wx.EVT_BUTTON, self.OnStyle)
         intervals.Bind(wx.EVT_BUTTON, self.OnIntervals)
+
+        quit.Bind(wx.EVT_BUTTON, self.OnQuit)
 
     def OnQuit(self, event):
         self.Close()
