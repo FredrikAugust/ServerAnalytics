@@ -4,6 +4,8 @@ for the GUI.
 
 import wx
 
+import gui_buttons
+
 __author__ = 'FredrikAugust@GitHub'
 
 
@@ -125,9 +127,30 @@ the graphs.')
         # Make sizer in control of assigning the size of elements in panel
         panel.SetSizer(sizer)
 
+        # -----------
+        # BINDINGS
+        # -----------
+
+        general.Bind(wx.EVT_BUTTON, self.OnGeneral)
+        font.Bind(wx.EVT_BUTTON, self.OnFont)
+        style.Bind(wx.EVT_BUTTON, self.OnStyle)
+        intervals.Bind(wx.EVT_BUTTON, self.OnIntervals)
+
     def OnQuit(self, event):
         self.Close()
 
     def OnAbout(self, event):
-        wx.MessageBox('This is a menu for configuring the \
+        wx.MessageBox('This is an application for configuring the \
 plots rendered by main.py')
+
+    def OnGeneral(self, event):
+        pass
+
+    def OnFont(self, event):
+        pass
+
+    def OnStyle(self, event):
+        pass
+
+    def OnIntervals(self, event):
+        pass

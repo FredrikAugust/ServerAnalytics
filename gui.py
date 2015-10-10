@@ -4,16 +4,15 @@ project with wxpython
 """
 
 import wx
-import json
 import threading
 
 # This is another file
-import gui_classes
+import gui_main
 
 __author__ = 'FredrikAugust@GitHub'
 
 # Create wx application
-app = gui_classes.App(False)
+app = gui_main.App(False)
 
 # Start app thread
 mainLoop_t = threading.Thread(target=app.MainLoop)
