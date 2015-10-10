@@ -3,7 +3,6 @@ for the GUI.
 """
 
 import wx
-import wx.grid
 
 __author__ = 'FredrikAugust@GitHub'
 
@@ -74,6 +73,46 @@ class MainFrame(wx.Frame):
         # You bind with the ID
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_CLOSE_FRAME)
+
+        #
+        # ELEMENTS
+        #
+
+        # Create the panel to hold the rest of the elements
+        panel = wx.Panel(self)
+
+        # This is like a .row in bootstrap iirc
+        sizer = wx.GridBagSizer(1, 6)
+
+        # Main heading
+        settings = wx.StaticText(panel, label='Settings')
+
+        # Sep.
+        sep = wx.StaticLine(panel)
+
+        # Setting-buttons
+        general = wx.Button(panel, label='General')
+        font = wx.Button(panel, label='Font')
+        style = wx.Button(panel, label='Style')
+        intervals = wx.Button(panel, label='Intervals')
+
+        button_flags = wx.EXPAND | wx.BOTTOM | wx.RIGHT
+
+        # Append everything to the grid layout
+        sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
+                  border=10)
+
+        sizer.Add(sep, pos=(1, 0), span=(1, 1),
+                  flag=wx.EXPAND | wx.BOTTOM, border=10)
+
+        sizer.Add(general, pos=(2, 0), flag=button_flags, border=5)
+        sizer.Add(font, pos=(3, 0), flag=button_flags, border=5)
+        sizer.Add(style, pos=(4, 0), flag=button_flags, border=5)
+        sizer.Add(intervals, pos=(5, 0), flag=button_flags, border=5)
+
+        sizer.AddGrowableCol(0)
+
+        panel.SetSizer(sizer)
 
     def OnQuit(self, event):
         self.Close()
