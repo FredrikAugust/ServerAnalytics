@@ -15,6 +15,8 @@ def save_to_file(obj, path):
     with open('cfg/%s.json' % path, 'w') as file:
         file.write(json_str)
 
+    print '[guil] Saved obj to JSON file.'
+
     # Create and show a modal
     dialog = wx.MessageDialog(None, 'Save successful.')
     dialog.ShowModal()
@@ -28,7 +30,7 @@ def get_python_obj(fp):
     with open(fp, 'r') as file:
         py_obj = json.load(file)
 
-    print 'Loaded Python object from JSON file'
+    print '[guil] Loaded Python object from JSON file'
 
     return py_obj
 
@@ -46,7 +48,7 @@ def decode_intervals(loads, temps):
         main_intervals.append([loads, interval['freq'], interval['amt']])
         main_intervals.append([temps, interval['freq'], interval['amt']])
 
-    print 'Created main.py compatible array.'
+    print '[guil] Created main.py compatible array.'
 
     return main_intervals
 
@@ -63,10 +65,14 @@ def decode_intervals_names():
     for interval in intervals:
         names.update({interval['freq']: interval['name']})
 
+    print '[guil] Got names for intervals.'
+
     return names
 
 
 def get_key(fp, k):
     """This will get the value of a key in the JSON cfg files"""
+
+    print '[guil] Returned key: %s' % k
 
     return get_python_obj(fp)[k]

@@ -174,8 +174,6 @@ class Font(BaseSettings):
         # Choices
         self.family_choices = ['serif', 'sans-serif', 'cursive',
                                'fantasy', 'monospace']
-        self.size_choices = ['xx-small', 'x-small', 'small', 'medium', 'large',
-                             'x-large', 'xx-large']
         self.style_choices = ['normal', 'italic', 'oblique']
         self.weight_choices = ['light', 'normal', 'medium',
                                'semibold', 'bold', 'heavy', 'black']
@@ -183,7 +181,9 @@ class Font(BaseSettings):
         # Inputs
         self.family_choice = wx.Choice(mainPanel,
                                        choices=self.family_choices)
-        self.size_choice = wx.Choice(mainPanel, choices=self.size_choices)
+        self.size_choice = intctrl.IntCtrl(mainPanel, min=1,
+                                           max=30,
+                                           allow_none=False, value=9)
         self.style_choice = wx.Choice(mainPanel,
                                       choices=self.style_choices)
         self.weight_choice = wx.Choice(mainPanel,
@@ -205,10 +205,7 @@ class Font(BaseSettings):
 
     def OnSave(self, event):
         family = self.family_choice.GetCurrentSelection()
-        size = self.size_choice.GetCurrentSelection()
-        if size < 0:
-            size = 3
-
+        size = self.size_choice.GetValue()
         style = self.style_choice.GetCurrentSelection()
         if style < 0:
             style = 0
@@ -220,7 +217,7 @@ class Font(BaseSettings):
         # Format nicely
         temp_obj = {
             'family': self.family_choices[family],
-            'size': self.size_choices[size],
+            'size': size,
             'style': self.style_choices[style],
             'weight': self.weight_choices[weight]
         }
@@ -251,11 +248,16 @@ class Style(BaseSettings):
         line_style = hl.HyperLinkCtrl(mainPanel, -1, 'Line style', URL='http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D.set_linestyle')
         line_color = wx.StaticText(mainPanel, label='Line color')
         line_width = wx.StaticText(mainPanel, label='Line width')
+        marker_style = hl.HyperLinkCtrl(mainPanel, -1, 'Marker style', URL='http://matplotlib.org/api/markers_api.html#module-matplotlib.markers')
 
         # Choices
         self.line_style_choices = ['--', '-.', ':', '', '-']
         self.line_color_choices = ['blue', 'green', 'red', 'cyan', 'magenta',
                                    'yellow', 'white', 'black']
+        self.marker_style_choices = ['.', ',', 'o', 'v', '^', '<', '>',
+                                     '1', '2', '3', '4', '8', 's', 'p', '*',
+                                     'h', 'H', '+', 'x', 'd', 'D', '|',
+                                     '_', '']
 
         # Inputs
         self.s_height_input = intctrl.IntCtrl(mainPanel, min=1,
@@ -270,6 +272,8 @@ class Style(BaseSettings):
                                            choices=self.line_color_choices)
         self.line_width_input = intctrl.IntCtrl(mainPanel, min=1, max=20,
                                                 allow_none=False, value=1)
+        self.marker_style_choice = wx.Choice(mainPanel,
+                                             choices=self.marker_style_choices)
 
         # Append everything to the grid layout
         sizer.Add(s_height, pos=(2, 0), flag=text_f, border=10)
@@ -277,19 +281,22 @@ class Style(BaseSettings):
         sizer.Add(line_style, pos=(4, 0), flag=text_f, border=10)
         sizer.Add(line_color, pos=(5, 0), flag=text_f, border=10)
         sizer.Add(line_width, pos=(6, 0), flag=text_f, border=10)
+        sizer.Add(marker_style, pos=(7, 0), flag=text_f, border=10)
 
         sizer.Add(self.s_height_input, pos=(2, 1), flag=input_flags, border=10)
         sizer.Add(self.s_width_input, pos=(3, 1), flag=input_flags, border=10)
         sizer.Add(self.line_style_choice, pos=(4, 1), flag=input_flags, border=10)
         sizer.Add(self.line_color_choice, pos=(5, 1), flag=input_flags, border=10)
         sizer.Add(self.line_width_input, pos=(6, 1), flag=input_flags, border=10)
+        sizer.Add(self.marker_style_choice, pos=(7, 1), flag=input_flags, border=10)
 
     def OnSave(self, event):
         s_height = self.s_height_input.GetValue()
-        s_width = self.s_height_input.GetValue()
+        s_width = self.s_width_input.GetValue()
         line_style = self.line_style_choice.GetCurrentSelection()
         line_color = self.line_color_choice.GetCurrentSelection()
         line_width = self.line_width_input.GetValue()
+        marker_style = self.marker_style_choice.GetCurrentSelection()
 
         # Format nicely
         temp_obj = {
@@ -297,7 +304,8 @@ class Style(BaseSettings):
             'width': s_width,
             'line_style': self.line_style_choices[line_style],
             'line_color': self.line_color_choices[line_color],
-            'line_width': line_width
+            'line_width': line_width,
+            'marker_style': self.marker_style_choices[marker_style]
         }
 
         # Thread that will save with args

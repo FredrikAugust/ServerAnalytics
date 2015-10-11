@@ -166,7 +166,7 @@ plots rendered by main.py')
         return True
 
     def OnStyle(self, event):
-        frame = gui_buttons.Style(None, 'Style', 2, 7)
+        frame = gui_buttons.Style(None, 'Style', 2, 8)
         frame.Show()
 
         return True

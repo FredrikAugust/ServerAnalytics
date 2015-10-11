@@ -6,10 +6,15 @@ project with wxpython
 import wx
 import threading
 
+from os import system
+
 # This is another file
 import gui_main
 
 __author__ = 'FredrikAugust@GitHub'
+
+# Folders-work
+system('mkdir cfg/')  # just incase it doesn't exist
 
 # Create wx application
 app = gui_main.App(False)
