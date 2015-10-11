@@ -20,15 +20,23 @@ def save_to_file(obj, path):
     dialog.ShowModal()
 
 
+def get_python_obj(fp):
+    """Returns the python-ified object from a JSON file"""
+
+    py_obj = None
+
+    with open(fp, 'r') as file:
+        py_obj = json.load(file)
+
+    return py_obj
+
+
 def decode_intervals(loads, temps):
     """This will return the python-ified version of the json objects that
     contain the interval
     """
 
-    intervals = None
-
-    with open('cfg/intervals.json', 'r') as file:
-        intervals = json.load(file)
+    intervals = get_python_obj('cfg/intervals.json')
 
     print 'Loaded Python object from JSON file'
 
@@ -41,3 +49,18 @@ def decode_intervals(loads, temps):
     print 'Created main.py compatible array.'
 
     return main_intervals
+
+
+def decode_intervals_names():
+    """This returns a dict that contains the freq and the display name
+    for that frequency
+    """
+
+    intervals = get_python_obj('cfg/intervals.json')
+
+    names = {}
+
+    for interval in intervals:
+        names.update({interval['freq']: interval['name']})
+
+    return names
