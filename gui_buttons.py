@@ -10,7 +10,7 @@ __author__ = 'FredrikAugust@GitHub'
 
 
 class BaseSettings(wx.Frame):
-    def __init__(self, parent, title, *args, **kwargs):
+    def __init__(self, parent, title, width, height, *args, **kwargs):
         wx.Frame.__init__(self, parent, -1, title,
                           style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
                           wx.CLOSE_BOX, size=wx.Size(300, 450))
@@ -45,6 +45,51 @@ class BaseSettings(wx.Frame):
 
         self.mainPanel = wx.Panel(self)
 
+        # Set grid layout
+        self.sizer = wx.GridBagSizer(width, height)
+
+        # Main heading
+        settings = wx.StaticText(self.mainPanel, label='%s Settings' % title)
+
+        # Sep.
+        sep = wx.StaticLine(self.mainPanel)
+
+        # Save button
+        save = wx.Button(self.mainPanel, label='Save changes')
+
+        # Flags
+        text_f = wx.TOP | wx.LEFT | wx.BOTTOM
+        input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
+
+        # Append everything to the grid layout
+
+        # Settings text
+        self.sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
+                       border=10)
+        # Separator line
+        self.sizer.Add(sep, pos=(1, 0), span=(1, width),
+                       flag=wx.EXPAND | wx.BOTTOM, border=10)
+
+        # Save button
+        self.sizer.Add(save, pos=(height, 0), span=(1, width), flag=wx.LEFT | wx.RIGHT |
+                       wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+
+        # Make the second column able to expand since it has the wx.EXPAND flag
+        self.sizer.AddGrowableCol(1)
+
+        # Make sizer in control of assigning the size of elements in panel
+        self.mainPanel.SetSizer(self.sizer)
+
+        # Flags
+        self.text_f = wx.TOP | wx.LEFT | wx.BOTTOM
+        self.input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
+
+        # Bind save to the save_to_file function
+        save.Bind(wx.EVT_BUTTON, self.OnSave)
+
+    def OnSave(self, event):
+        pass  # Will be rewritten by children
+
     def OnQuit(self, event):
         self.Close()
 
@@ -58,47 +103,33 @@ class General(BaseSettings):
         # Run the init from BaseSettings
         super(General, self).__init__(*args, **kwargs)
 
-        # Set grid layout
-        sizer = wx.GridBagSizer(2, 6)
-
-        # Main heading
-        settings = wx.StaticText(self.mainPanel, label='General Settings')
-
-        # Sep.
-        sep = wx.StaticLine(self.mainPanel)
+        # to avoid having to write `self.x` everywhere
+        sizer = self.sizer
+        mainPanel = self.mainPanel
+        text_f = self.text_f
+        input_flags = self.input_flags
 
         # Input text
-        dpi = wx.StaticText(self.mainPanel, label='DPI')
-        dash_cap = wx.StaticText(self.mainPanel, label='Dash cap-style')
-        dash_join = wx.StaticText(self.mainPanel, label='Dash join-style')
-        xkcd = wx.StaticText(self.mainPanel, label='XKCD-style')
+        dpi = wx.StaticText(mainPanel, label='DPI')
+        dash_cap = wx.StaticText(mainPanel, label='Dash cap-style')
+        dash_join = wx.StaticText(mainPanel, label='Dash join-style')
+        xkcd = wx.StaticText(mainPanel, label='XKCD-style')
 
         # Choices
         self.dash_cap_choices = ['butt', 'round', 'projecting']
         self.dash_join_choices = ['miter', 'round', 'bevel']
 
         # Inputs
-        self.dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100,
+        self.dpi_input = wx.lib.intctrl.IntCtrl(mainPanel, min=100,
                                                 max=2000,
                                                 allow_none=False, value=200)
-        self.dash_cap_input = wx.Choice(self.mainPanel,
+        self.dash_cap_input = wx.Choice(mainPanel,
                                         choices=self.dash_cap_choices)
-        self.dash_join_input = wx.Choice(self.mainPanel,
+        self.dash_join_input = wx.Choice(mainPanel,
                                          choices=self.dash_join_choices)
-        self.xkcd_input = wx.CheckBox(self.mainPanel)
-
-        save = wx.Button(self.mainPanel, label='Save changes')
-
-        text_f = wx.TOP | wx.LEFT | wx.BOTTOM
-        input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
+        self.xkcd_input = wx.CheckBox(mainPanel)
 
         # Append everything to the grid layout
-
-        # Settings text
-        sizer.Add(settings, pos=(0, 0), flag=text_f, border=10)
-        # Separator line
-        sizer.Add(sep, pos=(1, 0), span=(1, 2), flag=wx.EXPAND | wx.BOTTOM,
-                  border=10)
 
         # DPI
         sizer.Add(dpi, pos=(2, 0), flag=text_f, border=10)
@@ -116,19 +147,6 @@ class General(BaseSettings):
         # XKCD
         sizer.Add(xkcd, pos=(5, 0), flag=text_f, border=10)
         sizer.Add(self.xkcd_input, pos=(5, 1), flag=input_flags, border=10)
-
-        # Save button
-        sizer.Add(save, pos=(6, 0), span=(1, 2), flag=wx.LEFT | wx.RIGHT |
-                  wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
-
-        # Make the second column able to expand since it has the wx.EXPAND flag
-        sizer.AddGrowableCol(1)
-
-        # Make sizer in control of assigning the size of elements in panel
-        self.mainPanel.SetSizer(sizer)
-
-        # Bind save to the save_to_file function
-        save.Bind(wx.EVT_BUTTON, self.OnSave)
 
     def OnSave(self, event):
         dpi = self.dpi_input.GetValue()  # Get value in longInt
@@ -165,14 +183,11 @@ class Font(BaseSettings):
         # Run the init from BaseSettings
         super(Font, self).__init__(*args, **kwargs)
 
-        # Set grid layout
-        sizer = wx.GridBagSizer(2, 6)
-
-        # Main heading
-        settings = wx.StaticText(self.mainPanel, label='Font Settings')
-
-        # Sep.
-        sep = wx.StaticLine(self.mainPanel)
+        # to avoid having to write `self.x` everywhere
+        sizer = self.sizer
+        mainPanel = self.mainPanel
+        text_f = self.text_f
+        input_flags = self.input_flags
 
         # Texts
         family = wx.StaticText(self.mainPanel, label='Font Family')
@@ -190,29 +205,15 @@ class Font(BaseSettings):
                                'semibold', 'bold', 'heavy', 'black']
 
         # Inputs
-        self.family_choice = wx.Choice(self.mainPanel,
+        self.family_choice = wx.Choice(mainPanel,
                                        choices=self.family_choices)
-        self.size_choice = wx.Choice(self.mainPanel, choices=self.size_choices)
-        self.style_choice = wx.Choice(self.mainPanel,
+        self.size_choice = wx.Choice(mainPanel, choices=self.size_choices)
+        self.style_choice = wx.Choice(mainPanel,
                                       choices=self.style_choices)
-        self.weight_choice = wx.Choice(self.mainPanel,
+        self.weight_choice = wx.Choice(mainPanel,
                                        choices=self.weight_choices)
 
-        # Save button
-        save = wx.Button(self.mainPanel, label='Save changes')
-
-        # Flags
-        text_f = wx.TOP | wx.LEFT | wx.BOTTOM
-        input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
-
         # Append everything to the grid layout
-
-        # Settings text
-        sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
-                  border=10)
-        # Separator line
-        sizer.Add(sep, pos=(1, 0), span=(1, 2),
-                  flag=wx.EXPAND | wx.BOTTOM, border=10)
 
         # Font-family
         sizer.Add(family, pos=(2, 0), flag=text_f, border=10)
@@ -229,19 +230,6 @@ class Font(BaseSettings):
         # Font-style
         sizer.Add(weight, pos=(5, 0), flag=text_f, border=10)
         sizer.Add(self.weight_choice, pos=(5, 1), flag=input_flags, border=10)
-
-        # Save button
-        sizer.Add(save, pos=(6, 0), span=(1, 2), flag=wx.LEFT | wx.RIGHT |
-                  wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
-
-        # Make the second column able to expand since it has the wx.EXPAND flag
-        sizer.AddGrowableCol(1)
-
-        # Make sizer in control of assigning the size of elements in panel
-        self.mainPanel.SetSizer(sizer)
-
-        # Bind save to the save_to_file function
-        save.Bind(wx.EVT_BUTTON, self.OnSave)
 
     def OnSave(self, event):
         family = self.family_choice.GetCurrentSelection()
@@ -270,3 +258,32 @@ class Font(BaseSettings):
                                   args=[temp_obj, 'font'])
 
         save_t.run()  # Off you go!
+
+
+class Style(BaseSettings):
+    def __init__(self, *args, **kwargs):
+        # Run the init from BaseSettings
+        super(Style, self).__init__(*args, **kwargs)
+
+        # to avoid having to write `self.x` everywhere
+        sizer = self.sizer
+        mainPanel = self.mainPanel
+        text_f = self.text_f
+        input_flags = self.input_flags
+
+    def OnSave(self, event):
+        print 'TODO: implement save on style'
+
+class Intervals(BaseSettings):
+    def __init__(self, *args, **kwargs):
+        # Run the init from BaseSettings
+        super(Intervals, self).__init__(*args, **kwargs)
+
+        # to avoid having to write `self.x` everywhere
+        sizer = self.sizer
+        mainPanel = self.mainPanel
+        text_f = self.text_f
+        input_flags = self.input_flags
+
+    def OnSave(self, event):
+        print 'TODO: implement save on style'

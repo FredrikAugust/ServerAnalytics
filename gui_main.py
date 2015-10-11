@@ -154,19 +154,25 @@ the graphs.')
 plots rendered by main.py')
 
     def OnGeneral(self, event):
-        frame = gui_buttons.General(None, 'General')
+        frame = gui_buttons.General(None, 'General', 2, 6)
         frame.Show()
 
         return True
 
     def OnFont(self, event):
-        frame = gui_buttons.Font(None, 'Font')
+        frame = gui_buttons.Font(None, 'Font', 2, 6)
         frame.Show()
 
         return True
 
     def OnStyle(self, event):
-        pass
+        frame = gui_buttons.Style(None, 'Style', 2, 5)
+        frame.Show()
+
+        return True
 
     def OnIntervals(self, event):
-        pass
+        frame = gui_buttons.Intervals(None, 'Intervals', 3, 5)
+        frame.Show()
+
+        return True
