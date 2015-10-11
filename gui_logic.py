@@ -64,3 +64,9 @@ def decode_intervals_names():
         names.update({interval['freq']: interval['name']})
 
     return names
+
+
+def get_key(fp, k):
+    """This will get the value of a key in the JSON cfg files"""
+
+    return get_python_obj(fp)[k]

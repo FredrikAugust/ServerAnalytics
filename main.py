@@ -12,13 +12,13 @@ import gui_logic
 __author__ = 'FredrikAugust@GitHub'
 
 # Configure matplotlib
-font = {
-    'family': 'monospace',
-    'size': 10
-}
+font = gui_logic.get_python_obj('cfg/font.json')
 
 # Apply settings
 plt.rc('font', **font)
+
+if gui_logic.get_key('cfg/general.json', 'xkcd'):
+    plt.xkcd()  # amazin'.
 
 # Start importing files
 loads, temps = [pd.read_csv(
@@ -89,15 +89,18 @@ for mean in means:
     # Set a title
     ax.set_title(mean['name'])
 
-    # Plot with dates on x axis
-    ax.plot(mean['items'][0], mean['items'][1], 'o-')
+    capstyle = gui_logic.get_key('cfg/general.json', 'cap')
+    joinstyle = gui_logic.get_key('cfg/general.json', 'join')
 
-    # Invert x-axis so that newest is to the left
-    # ax.invert_xaxis()
+    # Plot with dates on x axis
+    ax.plot(mean['items'][0], mean['items'][1], 'o-',
+            solid_capstyle=capstyle, solid_joinstyle=joinstyle)
+
+    dpi = gui_logic.get_key('cfg/general.json', 'dpi')
 
     # Save the figure, implement naming system
     plt.savefig('public/%s.png' % mean['name'].replace(' ', ''),
-                dpi=200, bbox_inches='tight')
+                dpi=dpi, bbox_inches='tight')
 
     # Cleanup
     del fig
