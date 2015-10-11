@@ -1,0 +1,1 @@
+[{"freq": "5S", "name": "Realtime", "amt": 30}, {"freq": "H", "name": "Hour", "amt": 24}, {"freq": "D", "name": "Day", "amt": 14}, {"freq": "W-mon", "name": "Week", "amt": 16}]
