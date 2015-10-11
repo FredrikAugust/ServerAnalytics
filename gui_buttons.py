@@ -117,22 +117,12 @@ class General(BaseSettings):
 
         # Input text
         dpi = wx.StaticText(mainPanel, label='DPI')
-        cap = wx.StaticText(mainPanel, label='Cap-style')
-        join = wx.StaticText(mainPanel, label='Join-style')
         xkcd = wx.StaticText(mainPanel, label='XKCD-style')
-
-        # Choices
-        self.cap_choices = ['butt', 'round', 'projecting']
-        self.join_choices = ['miter', 'round', 'bevel']
 
         # Inputs
         self.dpi_input = intctrl.IntCtrl(mainPanel, min=100,
                                                 max=2000,
                                                 allow_none=False, value=200)
-        self.cap_input = wx.Choice(mainPanel,
-                                        choices=self.cap_choices)
-        self.join_input = wx.Choice(mainPanel,
-                                         choices=self.join_choices)
         self.xkcd_input = wx.CheckBox(mainPanel)
 
         # Append everything to the grid layout
@@ -141,30 +131,12 @@ class General(BaseSettings):
         sizer.Add(dpi, pos=(2, 0), flag=text_f, border=10)
         sizer.Add(self.dpi_input, pos=(2, 1), flag=input_flags, border=10)
 
-        # cap-style
-        sizer.Add(cap, pos=(3, 0), flag=text_f, border=10)
-        sizer.Add(self.cap_input, pos=(3, 1), flag=input_flags, border=10)
-
-        # join-style
-        sizer.Add(join, pos=(4, 0), flag=text_f, border=10)
-        sizer.Add(self.join_input, pos=(4, 1), flag=input_flags,
-                  border=10)
-
         # XKCD
-        sizer.Add(xkcd, pos=(5, 0), flag=text_f, border=10)
-        sizer.Add(self.xkcd_input, pos=(5, 1), flag=input_flags, border=10)
+        sizer.Add(xkcd, pos=(3, 0), flag=text_f, border=10)
+        sizer.Add(self.xkcd_input, pos=(3, 1), flag=input_flags, border=10)
 
     def OnSave(self, event):
         dpi = self.dpi_input.GetValue()  # Get value in longInt
-        # Get index of selection
-        cap = self.cap_input.GetCurrentSelection()
-        join = self.join_input.GetCurrentSelection()
-        # Choice will return -1 if empty on Windows
-        if cap < 0:
-            cap = 0
-
-        if join < 0:
-            join = 0
 
         # Get bool selection
         xkcd = self.xkcd_input.GetValue()
@@ -172,8 +144,6 @@ class General(BaseSettings):
         # Format nicely
         temp_obj = {
             'dpi': dpi,
-            'cap': self.cap_choices[cap],
-            'join': self.join_choices[join],
             'xkcd': xkcd
         }
 

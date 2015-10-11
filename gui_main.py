@@ -154,7 +154,7 @@ the graphs.')
 plots rendered by main.py')
 
     def OnGeneral(self, event):
-        frame = gui_buttons.General(None, 'General', 2, 6)
+        frame = gui_buttons.General(None, 'General', 2, 4)
         frame.Show()
 
         return True

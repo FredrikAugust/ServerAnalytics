@@ -89,12 +89,8 @@ for mean in means:
     # Set a title
     ax.set_title(mean['name'])
 
-    capstyle = gui_logic.get_key('cfg/general.json', 'cap')
-    joinstyle = gui_logic.get_key('cfg/general.json', 'join')
-
     # Plot with dates on x axis
-    ax.plot(mean['items'][0], mean['items'][1], 'o-',
-            solid_capstyle=capstyle, solid_joinstyle=joinstyle)
+    ax.plot(mean['items'][0], mean['items'][1], 'o-')
 
     dpi = gui_logic.get_key('cfg/general.json', 'dpi')
 
