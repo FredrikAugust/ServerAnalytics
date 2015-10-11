@@ -160,7 +160,10 @@ plots rendered by main.py')
         return True
 
     def OnFont(self, event):
-        pass
+        frame = gui_buttons.Font(None, 'Font')
+        frame.Show()
+
+        return True
 
     def OnStyle(self, event):
         pass

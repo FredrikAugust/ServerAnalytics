@@ -34,6 +34,9 @@ class BaseSettings(wx.Frame):
 
         self.CreateStatusBar()
 
+        # This is the tooltip helper area
+        self.SetStatusText('%s Settings Menu' % title)
+
         # Bind dropdown-elements with methods
         # EVT_MENU is an event that is called when activating a menu-element
         # You bind with the ID
@@ -55,9 +58,6 @@ class General(BaseSettings):
         # Run the init from BaseSettings
         super(General, self).__init__(*args, **kwargs)
 
-        # This is the tooltip helper area
-        self.SetStatusText('General Settings Menu')
-
         # Set grid layout
         sizer = wx.GridBagSizer(2, 6)
 
@@ -67,62 +67,59 @@ class General(BaseSettings):
         # Sep.
         sep = wx.StaticLine(self.mainPanel)
 
+        # Input text
+        dpi = wx.StaticText(self.mainPanel, label='DPI')
+        dash_cap = wx.StaticText(self.mainPanel, label='Dash cap-style')
+        dash_join = wx.StaticText(self.mainPanel, label='Dash join-style')
+        xkcd = wx.StaticText(self.mainPanel, label='XKCD-style')
+
+        # Choices
+        self.dash_cap_choices = ['butt', 'round', 'projecting']
+        self.dash_join_choices = ['miter', 'round', 'bevel']
+
         # Inputs
-        dpi_text = wx.StaticText(self.mainPanel, label='DPI')
         self.dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100,
                                                 max=2000,
                                                 allow_none=False, value=200)
-
-        dash_cap_style_text = wx.StaticText(self.mainPanel,
-                                            label='Dash cap-style')
-        self.dash_cap_style_choices = ['butt', 'round', 'projecting']
-        self.dash_cap_style_input = wx.Choice(self.mainPanel,
-                                              choices=self.dash_cap_style_choices)
-
-        dash_join_style_text = wx.StaticText(self.mainPanel,
-                                             label='Dash join-style')
-        self.dash_join_style_choices = ['miter', 'round', 'bevel']
-        self.dash_join_style_input = wx.Choice(self.mainPanel,
-                                               choices=self.dash_join_style_choices)
-
-        xkcd_text = wx.StaticText(self.mainPanel, label='XKCD-style')
+        self.dash_cap_input = wx.Choice(self.mainPanel,
+                                        choices=self.dash_cap_choices)
+        self.dash_join_input = wx.Choice(self.mainPanel,
+                                         choices=self.dash_join_choices)
         self.xkcd_input = wx.CheckBox(self.mainPanel)
 
         save = wx.Button(self.mainPanel, label='Save changes')
 
-        input_text_flags = wx.TOP | wx.LEFT | wx.BOTTOM
+        text_f = wx.TOP | wx.LEFT | wx.BOTTOM
         input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
 
         # Append everything to the grid layout
-        sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
-                  border=10)  # Settings text
 
-        sizer.Add(sep, pos=(1, 0), span=(1, 2),
-                  flag=wx.EXPAND | wx.BOTTOM, border=10)  # Separator line
+        # Settings text
+        sizer.Add(settings, pos=(0, 0), flag=text_f, border=10)
+        # Separator line
+        sizer.Add(sep, pos=(1, 0), span=(1, 2), flag=wx.EXPAND | wx.BOTTOM,
+                  border=10)
 
-        sizer.Add(dpi_text, pos=(2, 0), span=(1, 1), flag=input_text_flags,
-                  border=10)  # dpi text
-        sizer.Add(self.dpi_input, pos=(2, 1), span=(1, 1), flag=input_flags,
-                  border=10)  # dpi input
+        # DPI
+        sizer.Add(dpi, pos=(2, 0), flag=text_f, border=10)
+        sizer.Add(self.dpi_input, pos=(2, 1), flag=input_flags, border=10)
 
-        sizer.Add(dash_cap_style_text, pos=(3, 0), span=(1, 1),
-                  flag=input_text_flags, border=10)  # dash cap-style text
-        sizer.Add(self.dash_cap_style_input, pos=(3, 1), span=(1, 1),
-                  flag=input_flags, border=10)  # dash cap-style input
+        # Dash cap-style
+        sizer.Add(dash_cap, pos=(3, 0), flag=text_f, border=10)
+        sizer.Add(self.dash_cap_input, pos=(3, 1), flag=input_flags, border=10)
 
-        sizer.Add(dash_join_style_text, pos=(4, 0), span=(1, 1),
-                  flag=input_text_flags, border=10)  # dash join-style text
-        sizer.Add(self.dash_join_style_input, pos=(4, 1), span=(1, 1),
-                  flag=input_flags, border=10)  # dash join-style input
+        # Dash join-style
+        sizer.Add(dash_join, pos=(4, 0), flag=text_f, border=10)
+        sizer.Add(self.dash_join_input, pos=(4, 1), flag=input_flags,
+                  border=10)
 
-        sizer.Add(xkcd_text, pos=(5, 0), span=(1, 1),
-                  flag=input_text_flags, border=10)  # dash join-style text
-        sizer.Add(self.xkcd_input, pos=(5, 1), span=(1, 1),
-                  flag=input_flags, border=10)  # dash join-style input
+        # XKCD
+        sizer.Add(xkcd, pos=(5, 0), flag=text_f, border=10)
+        sizer.Add(self.xkcd_input, pos=(5, 1), flag=input_flags, border=10)
 
-        sizer.Add(save, pos=(6, 0), span=(1, 2),
-                  flag=wx.LEFT | wx.RIGHT | wx.TOP | wx.BOTTOM |
-                  wx.EXPAND, border=10)
+        # Save button
+        sizer.Add(save, pos=(6, 0), span=(1, 2), flag=wx.LEFT | wx.RIGHT |
+                  wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
         # Make the second column able to expand since it has the wx.EXPAND flag
         sizer.AddGrowableCol(1)
@@ -136,21 +133,140 @@ class General(BaseSettings):
     def OnSave(self, event):
         dpi = self.dpi_input.GetValue()  # Get value in longInt
         # Get index of selection
-        dash_cap_style = self.dash_cap_style_input.GetCurrentSelection()
-        dash_join_style = self.dash_join_style_input.GetCurrentSelection()
+        dash_cap = self.dash_cap_input.GetCurrentSelection()
+        dash_join = self.dash_join_input.GetCurrentSelection()
+        # Choice will return -1 if empty on Windows
+        if dash_cap < 0:
+            dash_cap = 0
+
+        if dash_join < 0:
+            dash_join = 0
+
         # Get bool selection
         xkcd = self.xkcd_input.GetValue()
 
         # Format nicely
         temp_obj = {
             'dpi': dpi,
-            'dash_cap_style': self.dash_cap_style_choices[dash_cap_style],
-            'dash_join_style': self.dash_join_style_choices[dash_join_style],
+            'dash_cap': self.dash_cap_choices[dash_cap],
+            'dash_join': self.dash_join_choices[dash_join],
             'xkcd': xkcd
         }
 
         # Thread that will save with args
         save_t = threading.Thread(target=gui_logic.save_to_file,
                                   args=[temp_obj, 'general'])
+
+        save_t.run()  # Off you go!
+
+
+class Font(BaseSettings):
+    def __init__(self, *args, **kwargs):
+        # Run the init from BaseSettings
+        super(Font, self).__init__(*args, **kwargs)
+
+        # Set grid layout
+        sizer = wx.GridBagSizer(2, 6)
+
+        # Main heading
+        settings = wx.StaticText(self.mainPanel, label='Font Settings')
+
+        # Sep.
+        sep = wx.StaticLine(self.mainPanel)
+
+        # Texts
+        family = wx.StaticText(self.mainPanel, label='Font Family')
+        size = wx.StaticText(self.mainPanel, label='Font Size')
+        style = wx.StaticText(self.mainPanel, label='Font Style')
+        weight = wx.StaticText(self.mainPanel, label='Font Weight')
+
+        # Choices
+        self.family_choices = ['serif', 'sans-serif', 'cursive',
+                               'fantasy', 'monospace']
+        self.size_choices = ['xx-small', 'x-small', 'small', 'medium', 'large',
+                             'x-large', 'xx-large']
+        self.style_choices = ['normal', 'italic', 'oblique']
+        self.weight_choices = ['light', 'normal', 'medium',
+                               'semibold', 'bold', 'heavy', 'black']
+
+        # Inputs
+        self.family_choice = wx.Choice(self.mainPanel,
+                                       choices=self.family_choices)
+        self.size_choice = wx.Choice(self.mainPanel, choices=self.size_choices)
+        self.style_choice = wx.Choice(self.mainPanel,
+                                      choices=self.style_choices)
+        self.weight_choice = wx.Choice(self.mainPanel,
+                                       choices=self.weight_choices)
+
+        # Save button
+        save = wx.Button(self.mainPanel, label='Save changes')
+
+        # Flags
+        text_f = wx.TOP | wx.LEFT | wx.BOTTOM
+        input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
+
+        # Append everything to the grid layout
+
+        # Settings text
+        sizer.Add(settings, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
+                  border=10)
+        # Separator line
+        sizer.Add(sep, pos=(1, 0), span=(1, 2),
+                  flag=wx.EXPAND | wx.BOTTOM, border=10)
+
+        # Font-family
+        sizer.Add(family, pos=(2, 0), flag=text_f, border=10)
+        sizer.Add(self.family_choice, pos=(2, 1), flag=input_flags, border=10)
+
+        # Font-size
+        sizer.Add(size, pos=(3, 0), flag=text_f, border=10)
+        sizer.Add(self.size_choice, pos=(3, 1), flag=input_flags, border=10)
+
+        # Font-style
+        sizer.Add(style, pos=(4, 0), flag=text_f, border=10)
+        sizer.Add(self.style_choice, pos=(4, 1), flag=input_flags, border=10)
+
+        # Font-style
+        sizer.Add(weight, pos=(5, 0), flag=text_f, border=10)
+        sizer.Add(self.weight_choice, pos=(5, 1), flag=input_flags, border=10)
+
+        # Save button
+        sizer.Add(save, pos=(6, 0), span=(1, 2), flag=wx.LEFT | wx.RIGHT |
+                  wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+
+        # Make the second column able to expand since it has the wx.EXPAND flag
+        sizer.AddGrowableCol(1)
+
+        # Make sizer in control of assigning the size of elements in panel
+        self.mainPanel.SetSizer(sizer)
+
+        # Bind save to the save_to_file function
+        save.Bind(wx.EVT_BUTTON, self.OnSave)
+
+    def OnSave(self, event):
+        family = self.family_choice.GetCurrentSelection()
+        size = self.size_choice.GetCurrentSelection()
+        if size < 0:
+            size = 3
+
+        style = self.style_choice.GetCurrentSelection()
+        if style < 0:
+            style = 0
+
+        weight = self.weight_choice.GetCurrentSelection()
+        if weight < 0:
+            weight = 2
+
+        # Format nicely
+        temp_obj = {
+            'family': self.family_choices[family],
+            'size': self.size_choices[size],
+            'style': self.style_choices[style],
+            'weight': self.weight_choices[weight]
+        }
+
+        # Thread that will save with args
+        save_t = threading.Thread(target=gui_logic.save_to_file,
+                                  args=[temp_obj, 'font'])
 
         save_t.run()  # Off you go!
