@@ -15,32 +15,23 @@ class BaseSettings(wx.Frame):
                           style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
                           wx.CLOSE_BOX, size=wx.Size(300, 450))
 
-        # Create a menu object, this is the drop-down
         menuFile = wx.Menu()
 
         # This is an entry that shows an about dialog
         menuFile.Append(wx.ID_ABOUT, '&About')
 
-        # Simple separator (line)
         menuFile.AppendSeparator()
 
         # Create a new entry in the drop-down which for now is exit
         # the &x means that 'x' is the shortcut to close the app
         menuFile.Append(wx.ID_CLOSE_FRAME, 'E&xit')
 
-        # Create the menu bar
         # This is shown in other apps when pressing 'alt'
         menuBar = wx.MenuBar()
-
-        # Add the dropdown to the menuBar
-        # The shortcut to open this is to press 'alt+f'
-        # specified by the '&F'
         menuBar.Append(menuFile, '&File')
 
-        # Link the frame and the MenuBar obj
         self.SetMenuBar(menuBar)
 
-        # Create/Render the bar
         self.CreateStatusBar()
 
         # Bind dropdown-elements with methods
@@ -49,7 +40,6 @@ class BaseSettings(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_CLOSE_FRAME)
 
-        # Set a panel for everything else
         self.mainPanel = wx.Panel(self)
 
     def OnQuit(self, event):
@@ -79,7 +69,8 @@ class General(BaseSettings):
 
         # Inputs
         dpi_text = wx.StaticText(self.mainPanel, label='DPI')
-        self.dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100, max=2000,
+        self.dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100,
+                                                max=2000,
                                                 allow_none=False, value=200)
 
         dash_cap_style_text = wx.StaticText(self.mainPanel,
@@ -143,11 +134,14 @@ class General(BaseSettings):
         save.Bind(wx.EVT_BUTTON, self.OnSave)
 
     def OnSave(self, event):
-        dpi = self.dpi_input.GetValue()
+        dpi = self.dpi_input.GetValue()  # Get value in longInt
+        # Get index of selection
         dash_cap_style = self.dash_cap_style_input.GetCurrentSelection()
         dash_join_style = self.dash_join_style_input.GetCurrentSelection()
+        # Get bool selection
         xkcd = self.xkcd_input.GetValue()
 
+        # Format nicely
         temp_obj = {
             'dpi': dpi,
             'dash_cap_style': self.dash_cap_style_choices[dash_cap_style],
@@ -155,7 +149,8 @@ class General(BaseSettings):
             'xkcd': xkcd
         }
 
+        # Thread that will save with args
         save_t = threading.Thread(target=gui_logic.save_to_file,
                                   args=[temp_obj, 'general'])
 
-        save_t.run()
+        save_t.run()  # Off you go!

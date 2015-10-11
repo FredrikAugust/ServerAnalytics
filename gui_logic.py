@@ -15,5 +15,6 @@ def save_to_file(obj, path):
     with open('cfg/%s.json' % path, 'w') as file:
         file.write(json_str)
 
+    # Create and show a modal
     dialog = wx.MessageDialog(None, 'Save successful.')
     dialog.ShowModal()
