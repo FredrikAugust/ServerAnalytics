@@ -1,7 +1,9 @@
 """This is where I will put the code regarding settings-menus."""
 
 import wx
-import wx.lib.intctrl
+import wx.lib.intctrl as intctrl
+import wx.lib.agw.hyperlink as hl
+
 import threading
 
 import gui_logic
@@ -10,6 +12,11 @@ __author__ = 'FredrikAugust@GitHub'
 
 
 class BaseSettings(wx.Frame):
+    '''This is the main class/prototype which all of the GUI _pages_ inherits
+    from. Edit here if you're going to add something that should be displayed
+    on all of the pages.
+    '''
+
     def __init__(self, parent, title, width, height, *args, **kwargs):
         wx.Frame.__init__(self, parent, -1, title,
                           style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
@@ -94,8 +101,7 @@ class BaseSettings(wx.Frame):
         self.Close()
 
     def OnAbout(self, event):
-        wx.MessageBox('This is a menu for configuring the \
-plots rendered by main.py')
+        wx.MessageBox('This is a menu for configuring the plots from main.py')
 
 
 class General(BaseSettings):
@@ -120,7 +126,7 @@ class General(BaseSettings):
         self.dash_join_choices = ['miter', 'round', 'bevel']
 
         # Inputs
-        self.dpi_input = wx.lib.intctrl.IntCtrl(mainPanel, min=100,
+        self.dpi_input = intctrl.IntCtrl(mainPanel, min=100,
                                                 max=2000,
                                                 allow_none=False, value=200)
         self.dash_cap_input = wx.Choice(mainPanel,
@@ -190,10 +196,10 @@ class Font(BaseSettings):
         input_flags = self.input_flags
 
         # Texts
-        family = wx.StaticText(self.mainPanel, label='Font Family')
-        size = wx.StaticText(self.mainPanel, label='Font Size')
-        style = wx.StaticText(self.mainPanel, label='Font Style')
-        weight = wx.StaticText(self.mainPanel, label='Font Weight')
+        family = wx.StaticText(mainPanel, label='Font Family')
+        size = wx.StaticText(mainPanel, label='Font Size')
+        style = wx.StaticText(mainPanel, label='Font Style')
+        weight = wx.StaticText(mainPanel, label='Font Weight')
 
         # Choices
         self.family_choices = ['serif', 'sans-serif', 'cursive',
@@ -215,20 +221,16 @@ class Font(BaseSettings):
 
         # Append everything to the grid layout
 
-        # Font-family
+        # Text
         sizer.Add(family, pos=(2, 0), flag=text_f, border=10)
-        sizer.Add(self.family_choice, pos=(2, 1), flag=input_flags, border=10)
-
-        # Font-size
         sizer.Add(size, pos=(3, 0), flag=text_f, border=10)
-        sizer.Add(self.size_choice, pos=(3, 1), flag=input_flags, border=10)
-
-        # Font-style
         sizer.Add(style, pos=(4, 0), flag=text_f, border=10)
-        sizer.Add(self.style_choice, pos=(4, 1), flag=input_flags, border=10)
-
-        # Font-style
         sizer.Add(weight, pos=(5, 0), flag=text_f, border=10)
+
+        # Inputs
+        sizer.Add(self.family_choice, pos=(2, 1), flag=input_flags, border=10)
+        sizer.Add(self.size_choice, pos=(3, 1), flag=input_flags, border=10)
+        sizer.Add(self.style_choice, pos=(4, 1), flag=input_flags, border=10)
         sizer.Add(self.weight_choice, pos=(5, 1), flag=input_flags, border=10)
 
     def OnSave(self, event):
@@ -271,8 +273,68 @@ class Style(BaseSettings):
         text_f = self.text_f
         input_flags = self.input_flags
 
+        # Texts
+        # s_ is short for style_page. I'm just worried about interference
+        # from the main class
+        s_height = wx.StaticText(mainPanel, label='Graph height (in)')
+        s_width = wx.StaticText(mainPanel, label='Graph width (in)')
+        line_style = hl.HyperLinkCtrl(mainPanel, -1, 'Line style', URL='http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D.set_linestyle')
+        line_color = wx.StaticText(mainPanel, label='Line color')
+        line_width = wx.StaticText(mainPanel, label='Line width')
+
+        # Choices
+        self.line_style_choices = ['--', '-.', ':', '', '-']
+        self.line_color_choices = ['blue', 'green', 'red', 'cyan', 'magenta',
+                                   'yellow', 'white', 'black']
+
+        # Inputs
+        self.s_height_input = intctrl.IntCtrl(mainPanel, min=1,
+                                              max=20,
+                                              allow_none=False, value=7)
+        self.s_width_input = intctrl.IntCtrl(mainPanel, min=2,
+                                             max=40,
+                                             allow_none=False, value=12)
+        self.line_style_choice = wx.Choice(mainPanel,
+                                           choices=self.line_style_choices)
+        self.line_color_choice = wx.Choice(mainPanel,
+                                           choices=self.line_color_choices)
+        self.line_width_input = intctrl.IntCtrl(mainPanel, min=1, max=20,
+                                                allow_none=False, value=1)
+
+        # Append everything to the grid layout
+        sizer.Add(s_height, pos=(2, 0), flag=text_f, border=10)
+        sizer.Add(s_width, pos=(3, 0), flag=text_f, border=10)
+        sizer.Add(line_style, pos=(4, 0), flag=text_f, border=10)
+        sizer.Add(line_color, pos=(5, 0), flag=text_f, border=10)
+        sizer.Add(line_width, pos=(6, 0), flag=text_f, border=10)
+
+        sizer.Add(self.s_height_input, pos=(2, 1), flag=input_flags, border=10)
+        sizer.Add(self.s_width_input, pos=(3, 1), flag=input_flags, border=10)
+        sizer.Add(self.line_style_choice, pos=(4, 1), flag=input_flags, border=10)
+        sizer.Add(self.line_color_choice, pos=(5, 1), flag=input_flags, border=10)
+        sizer.Add(self.line_width_input, pos=(6, 1), flag=input_flags, border=10)
+
     def OnSave(self, event):
-        print 'TODO: implement save on style'
+        s_height = self.s_height_input.GetValue()
+        s_width = self.s_height_input.GetValue()
+        line_style = self.line_style_choice.GetCurrentSelection()
+        line_color = self.line_color_choice.GetCurrentSelection()
+        line_width = self.line_width_input.GetValue()
+
+        # Format nicely
+        temp_obj = {
+            'height': s_height,
+            'width': s_width,
+            'line_style': self.line_style_choices[line_style],
+            'line_color': self.line_color_choices[line_color],
+            'line_width': line_width
+        }
+
+        # Thread that will save with args
+        save_t = threading.Thread(target=gui_logic.save_to_file,
+                                  args=[temp_obj, 'style'])
+
+        save_t.run()  # Off you go!
 
 class Intervals(BaseSettings):
     def __init__(self, *args, **kwargs):
@@ -286,4 +348,4 @@ class Intervals(BaseSettings):
         input_flags = self.input_flags
 
     def OnSave(self, event):
-        print 'TODO: implement save on style'
+        print 'TODO: implement save on intervals'

@@ -166,13 +166,13 @@ plots rendered by main.py')
         return True
 
     def OnStyle(self, event):
-        frame = gui_buttons.Style(None, 'Style', 2, 5)
+        frame = gui_buttons.Style(None, 'Style', 2, 7)
         frame.Show()
 
         return True
 
     def OnIntervals(self, event):
-        frame = gui_buttons.Intervals(None, 'Intervals', 3, 5)
+        frame = gui_buttons.Intervals(None, 'Intervals', 3, 6)
         frame.Show()
 
         return True
