@@ -28,6 +28,8 @@ def get_python_obj(fp):
     with open(fp, 'r') as file:
         py_obj = json.load(file)
 
+    print 'Loaded Python object from JSON file'
+
     return py_obj
 
 
@@ -37,8 +39,6 @@ def decode_intervals(loads, temps):
     """
 
     intervals = get_python_obj('cfg/intervals.json')
-
-    print 'Loaded Python object from JSON file'
 
     main_intervals = []
 

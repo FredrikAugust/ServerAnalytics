@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+import gui_logic
+
 __author__ = 'FredrikAugust@GitHub'
 
 # Configure matplotlib
@@ -26,12 +28,7 @@ loads, temps = [pd.read_csv(
 # This is used to determine the names of the graphs
 # I select from this object using the key and use the value as part of the name
 # If you look further down you'll see why the strange key-names
-times = {
-    '5S': 'Realtime',
-    'H': 'Hour',
-    'D': 'Day',
-    'W-mon': 'Week'
-}
+times = gui_logic.decode_intervals_names()
 
 
 def get_mean(item, time_type, n):
@@ -67,25 +64,7 @@ def get_mean(item, time_type, n):
     }
 
 # All the types of 'things' that should get plotted
-items = [
-    # 5 Seconds
-    # 5 Second intervals
-    [loads, '5S', 30],
-    [temps, '5S', 30],
-
-    # Hour
-    [loads, 'H', 24],
-    [temps, 'H', 24],
-
-    # Day
-    [loads, 'D', 14],
-    [temps, 'D', 14],
-
-    # Week
-    # Week mon-sun
-    [loads, 'W-mon', 16],
-    [temps, 'W-mon', 16],
-]
+items = gui_logic.decode_intervals(loads, temps)
 
 # Get the last times from each of the different "time-types"
 means = [get_mean(item, time_type, n) for item, time_type, n in items]
