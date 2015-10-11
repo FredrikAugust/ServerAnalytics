@@ -172,7 +172,7 @@ plots rendered by main.py')
         return True
 
     def OnIntervals(self, event):
-        frame = gui_buttons.Intervals(None, 'Intervals', 3, 6)
+        frame = gui_buttons.Intervals(None, 'Intervals', 3, 7)
         frame.Show()
 
         return True

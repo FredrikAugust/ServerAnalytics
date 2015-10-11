@@ -20,7 +20,7 @@ class BaseSettings(wx.Frame):
     def __init__(self, parent, title, width, height, *args, **kwargs):
         wx.Frame.__init__(self, parent, -1, title,
                           style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
-                          wx.CLOSE_BOX, size=wx.Size(300, 450))
+                          wx.CLOSE_BOX, size=wx.Size(400, 450))
 
         menuFile = wx.Menu()
 
@@ -336,6 +336,7 @@ class Style(BaseSettings):
 
         save_t.run()  # Off you go!
 
+
 class Intervals(BaseSettings):
     def __init__(self, *args, **kwargs):
         # Run the init from BaseSettings
@@ -347,5 +348,90 @@ class Intervals(BaseSettings):
         text_f = self.text_f
         input_flags = self.input_flags
 
+        # Texts
+        name = wx.StaticText(mainPanel, label='Name')
+        freq = hl.HyperLinkCtrl(mainPanel, -1, 'Freq.', URL='http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases')
+        amt = wx.StaticText(mainPanel, label='Amt.')
+
+        # Inputs
+
+        # Names
+        self.i_name = wx.TextCtrl(mainPanel, value='Realtime')
+        self.ii_name = wx.TextCtrl(mainPanel, value='Hour')
+        self.iii_name = wx.TextCtrl(mainPanel, value='Day')
+        self.iv_name = wx.TextCtrl(mainPanel, value='Week')
+
+        # Freqencies
+        self.i_freq = wx.TextCtrl(mainPanel, value='5S')
+        self.ii_freq = wx.TextCtrl(mainPanel, value='H')
+        self.iii_freq = wx.TextCtrl(mainPanel, value='D')
+        self.iv_freq = wx.TextCtrl(mainPanel, value='W-mon')
+
+        # Amounts
+        self.i_amt = intctrl.IntCtrl(mainPanel, min=2, max=40, allow_none=False, value=30)
+        self.ii_amt = intctrl.IntCtrl(mainPanel, min=2, max=40, allow_none=False, value=24)
+        self.iii_amt = intctrl.IntCtrl(mainPanel, min=2, max=40, allow_none=False, value=14)
+        self.iv_amt = intctrl.IntCtrl(mainPanel, min=2, max=40, allow_none=False, value=16)
+
+        # This grid uses special Flags
+        left_text_f = wx.LEFT | wx.BOTTOM | wx.TOP
+        middle_text_f = wx.BOTTOM | wx.TOP
+        right_text = wx.RIGHT | wx.BOTTOM | wx.TOP
+
+        left_input_f = left_text_f | wx.EXPAND
+        middle_input_f = middle_text_f | wx.EXPAND
+        right_input_f = right_text | wx.EXPAND
+
+        # Append everything to the grid layout
+        sizer.Add(name, pos=(2, 0), flag=left_text_f, border=10)
+        sizer.Add(freq, pos=(2, 1), flag=middle_text_f, border=10)
+        sizer.Add(amt, pos=(2, 2), flag=right_text, border=10)
+
+        sizer.Add(self.i_name, pos=(3, 0), flag=left_input_f, border=10)
+        sizer.Add(self.i_freq, pos=(3, 1), flag=middle_input_f, border=10)
+        sizer.Add(self.i_amt, pos=(3, 2), flag=right_input_f, border=10)
+
+        sizer.Add(self.ii_name, pos=(4, 0), flag=left_input_f, border=10)
+        sizer.Add(self.ii_freq, pos=(4, 1), flag=middle_input_f, border=10)
+        sizer.Add(self.ii_amt, pos=(4, 2), flag=right_input_f, border=10)
+
+        sizer.Add(self.iii_name, pos=(5, 0), flag=left_input_f, border=10)
+        sizer.Add(self.iii_freq, pos=(5, 1), flag=middle_input_f, border=10)
+        sizer.Add(self.iii_amt, pos=(5, 2), flag=right_input_f, border=10)
+
+        sizer.Add(self.iv_name, pos=(6, 0), flag=left_input_f, border=10)
+        sizer.Add(self.iv_freq, pos=(6, 1), flag=middle_input_f, border=10)
+        sizer.Add(self.iv_amt, pos=(6, 2), flag=right_input_f, border=10)
+
     def OnSave(self, event):
-        print 'TODO: implement save on intervals'
+        i = {
+            'name': self.i_name.GetValue(),
+            'freq': self.i_freq.GetValue(),
+            'amt': self.i_amt.GetValue()
+        }
+
+        ii = {
+            'name': self.ii_name.GetValue(),
+            'freq': self.ii_freq.GetValue(),
+            'amt': self.ii_amt.GetValue()
+        }
+
+        iii = {
+            'name': self.iii_name.GetValue(),
+            'freq': self.iii_freq.GetValue(),
+            'amt': self.iii_amt.GetValue()
+        }
+
+        iv = {
+            'name': self.iv_name.GetValue(),
+            'freq': self.iv_freq.GetValue(),
+            'amt': self.iv_amt.GetValue()
+        }
+
+        temp_obj = [i, ii, iii, iv]
+
+        # Thread that will save with args
+        save_t = threading.Thread(target=gui_logic.save_to_file,
+                                  args=[temp_obj, 'intervals'])
+
+        save_t.run()  # Off you go!
