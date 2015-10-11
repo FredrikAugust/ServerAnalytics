@@ -7,9 +7,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+from os import system
+
 import gui_logic
 
 __author__ = 'FredrikAugust@GitHub'
+
+# Folders and clean dirs
+system('mkdir public/')  # create public/
+system('rm public/*')  # del * in public/
 
 # Configure matplotlib
 font = gui_logic.get_python_obj('cfg/font.json')
