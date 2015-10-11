@@ -2,6 +2,9 @@
 
 import wx
 import wx.lib.intctrl
+import threading
+
+import gui_logic
 
 __author__ = 'FredrikAugust@GitHub'
 
@@ -66,7 +69,7 @@ class General(BaseSettings):
         self.SetStatusText('General Settings Menu')
 
         # Set grid layout
-        sizer = wx.GridBagSizer(2, 5)
+        sizer = wx.GridBagSizer(2, 6)
 
         # Main heading
         settings = wx.StaticText(self.mainPanel, label='General Settings')
@@ -76,23 +79,25 @@ class General(BaseSettings):
 
         # Inputs
         dpi_text = wx.StaticText(self.mainPanel, label='DPI')
-        dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100, max=2000,
-                                           allow_none=False, value=200)
+        self.dpi_input = wx.lib.intctrl.IntCtrl(self.mainPanel, min=100, max=2000,
+                                                allow_none=False, value=200)
 
         dash_cap_style_text = wx.StaticText(self.mainPanel,
                                             label='Dash cap-style')
-        dash_cap_style_choices = ['butt', 'round', 'projecting']
-        dash_cap_style_input = wx.Choice(self.mainPanel,
-                                         choices=dash_cap_style_choices)
+        self.dash_cap_style_choices = ['butt', 'round', 'projecting']
+        self.dash_cap_style_input = wx.Choice(self.mainPanel,
+                                              choices=self.dash_cap_style_choices)
 
         dash_join_style_text = wx.StaticText(self.mainPanel,
                                              label='Dash join-style')
-        dash_join_style_choices = ['miter', 'round', 'bevel']
-        dash_join_style_input = wx.Choice(self.mainPanel,
-                                          choices=dash_join_style_choices)
+        self.dash_join_style_choices = ['miter', 'round', 'bevel']
+        self.dash_join_style_input = wx.Choice(self.mainPanel,
+                                               choices=self.dash_join_style_choices)
 
         xkcd_text = wx.StaticText(self.mainPanel, label='XKCD-style')
-        xkcd_input = wx.CheckBox(self.mainPanel)
+        self.xkcd_input = wx.CheckBox(self.mainPanel)
+
+        save = wx.Button(self.mainPanel, label='Save changes')
 
         input_text_flags = wx.TOP | wx.LEFT | wx.BOTTOM
         input_flags = wx.TOP | wx.RIGHT | wx.BOTTOM | wx.EXPAND
@@ -105,27 +110,52 @@ class General(BaseSettings):
                   flag=wx.EXPAND | wx.BOTTOM, border=10)  # Separator line
 
         sizer.Add(dpi_text, pos=(2, 0), span=(1, 1), flag=input_text_flags,
-                  border=10) # dpi text
-        sizer.Add(dpi_input, pos=(2, 1), span=(1, 1), flag=input_flags,
-                  border=10) # dpi input
+                  border=10)  # dpi text
+        sizer.Add(self.dpi_input, pos=(2, 1), span=(1, 1), flag=input_flags,
+                  border=10)  # dpi input
 
-        sizer.Add(dash_cap_style_text, pos=(3, 0), span=(1,1),
+        sizer.Add(dash_cap_style_text, pos=(3, 0), span=(1, 1),
                   flag=input_text_flags, border=10)  # dash cap-style text
-        sizer.Add(dash_cap_style_input, pos=(3, 1), span=(1,1),
+        sizer.Add(self.dash_cap_style_input, pos=(3, 1), span=(1, 1),
                   flag=input_flags, border=10)  # dash cap-style input
 
-        sizer.Add(dash_join_style_text, pos=(4, 0), span=(1,1),
+        sizer.Add(dash_join_style_text, pos=(4, 0), span=(1, 1),
                   flag=input_text_flags, border=10)  # dash join-style text
-        sizer.Add(dash_join_style_input, pos=(4, 1), span=(1,1),
+        sizer.Add(self.dash_join_style_input, pos=(4, 1), span=(1, 1),
                   flag=input_flags, border=10)  # dash join-style input
 
-        sizer.Add(xkcd_text, pos=(5, 0), span=(1,1),
+        sizer.Add(xkcd_text, pos=(5, 0), span=(1, 1),
                   flag=input_text_flags, border=10)  # dash join-style text
-        sizer.Add(xkcd_input, pos=(5, 1), span=(1,1),
+        sizer.Add(self.xkcd_input, pos=(5, 1), span=(1, 1),
                   flag=input_flags, border=10)  # dash join-style input
+
+        sizer.Add(save, pos=(6, 0), span=(1, 2),
+                  flag=wx.LEFT | wx.RIGHT | wx.TOP | wx.BOTTOM |
+                  wx.EXPAND, border=10)
 
         # Make the second column able to expand since it has the wx.EXPAND flag
         sizer.AddGrowableCol(1)
 
         # Make sizer in control of assigning the size of elements in panel
         self.mainPanel.SetSizer(sizer)
+
+        # Bind save to the save_to_file function
+        save.Bind(wx.EVT_BUTTON, self.OnSave)
+
+    def OnSave(self, event):
+        dpi = self.dpi_input.GetValue()
+        dash_cap_style = self.dash_cap_style_input.GetCurrentSelection()
+        dash_join_style = self.dash_join_style_input.GetCurrentSelection()
+        xkcd = self.xkcd_input.GetValue()
+
+        temp_obj = {
+            'dpi': dpi,
+            'dash_cap_style': self.dash_cap_style_choices[dash_cap_style],
+            'dash_join_style': self.dash_join_style_choices[dash_join_style],
+            'xkcd': xkcd
+        }
+
+        save_t = threading.Thread(target=gui_logic.save_to_file,
+                                  args=[temp_obj, 'general'])
+
+        save_t.run()
