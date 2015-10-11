@@ -18,3 +18,26 @@ def save_to_file(obj, path):
     # Create and show a modal
     dialog = wx.MessageDialog(None, 'Save successful.')
     dialog.ShowModal()
+
+
+def decode_intervals(loads, temps):
+    """This will return the python-ified version of the json objects that
+    contain the interval
+    """
+
+    intervals = None
+
+    with open('cfg/intervals.json', 'r') as file:
+        intervals = json.load(file)
+
+    print 'Loaded Python object from JSON file'
+
+    main_intervals = []
+
+    for interval in intervals:
+        main_intervals.append([loads, interval['name'], interval['amt']])
+        main_intervals.append([temps, interval['name'], interval['amt']])
+
+    print 'Created main.py compatible array.'
+
+    return main_intervals
