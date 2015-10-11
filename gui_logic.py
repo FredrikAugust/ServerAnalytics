@@ -43,8 +43,8 @@ def decode_intervals(loads, temps):
     main_intervals = []
 
     for interval in intervals:
-        main_intervals.append([loads, interval['name'], interval['amt']])
-        main_intervals.append([temps, interval['name'], interval['amt']])
+        main_intervals.append([loads, interval['freq'], interval['amt']])
+        main_intervals.append([temps, interval['freq'], interval['amt']])
 
     print 'Created main.py compatible array.'
 
