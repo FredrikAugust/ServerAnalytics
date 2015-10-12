@@ -121,8 +121,8 @@ class General(BaseSettings):
 
         # Inputs
         self.dpi_input = intctrl.IntCtrl(mainPanel, min=100,
-                                                max=2000,
-                                                allow_none=False, value=200)
+                                         max=2000,
+                                         allow_none=False, value=200)
         self.xkcd_input = wx.CheckBox(mainPanel)
 
         # Append everything to the grid layout
